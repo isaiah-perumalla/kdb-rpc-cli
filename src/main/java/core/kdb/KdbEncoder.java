@@ -1,7 +1,10 @@
 package core.kdb;
 
 import org.agrona.ExpandableArrayBuffer;
+import org.agrona.LangUtil;
 import org.agrona.MutableDirectBuffer;
+
+import java.io.UnsupportedEncodingException;
 
 public class KdbEncoder {
     public static final int SizeOfType = 1;
@@ -10,6 +13,7 @@ public class KdbEncoder {
     public static final int SIZE_OF_DOUBLE = 8;
     public static final int SIZE_OF_LONG = 8;
     private static final int SIZE_OF_TIMESPAN = 8;
+    private static final String ENCODING = "ISO-8859-1";
 
     public static int encodeSymArray(MutableDirectBuffer buffer, int offset, String[] strings) {
         int position = offset;
@@ -157,5 +161,21 @@ public class KdbEncoder {
     public static void encodeHeader(MutableDirectBuffer buffer, int offset, int messageSize) {
         buffer.putByte(offset, (byte) 1); //little endian
         buffer.putInt(offset + 4, messageSize);
+    }
+
+    public static int encodeLogin(MutableDirectBuffer writeBuffer, int offset, String creds) {
+        try {
+            byte[] bytes = creds.getBytes(ENCODING);
+            writeBuffer.putBytes(offset, bytes);
+            int written = bytes.length;
+            writeBuffer.putByte(offset + written, (byte) 3);
+            written += 1;
+            writeBuffer.putByte(offset + written, NULL_CHAR);
+            written += 1;
+            return written;
+        } catch (UnsupportedEncodingException e) {
+            LangUtil.rethrowUnchecked(e);
+        }
+        return 0;
     }
 }

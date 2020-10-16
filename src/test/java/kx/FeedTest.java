@@ -1,5 +1,6 @@
 package kx;
 
+import core.kdb.KdbConnection;
 import core.kdb.KdbEncoder;
 import core.kdb.TimeUtils;
 import org.agrona.ExpandableArrayBuffer;
@@ -14,6 +15,7 @@ public class FeedTest {
         c c = null;
         try {
             c = new c("localhost", 5010);
+            KdbConnection conn = KdbConnection.open("localhost", 5010, "isaiahp");
             // Single row insert - not as efficient as bulk insert
            /* for (int i = 0; i < 10; i++) {
                 // Assumes a remote schema of quote:([]time:timespan$(); sym:`g#`symbol$(); bid:`float$(); ask:`float$(); bsize:`long$(); asize:`long$(); mode:`char$(); ex:`char$()
