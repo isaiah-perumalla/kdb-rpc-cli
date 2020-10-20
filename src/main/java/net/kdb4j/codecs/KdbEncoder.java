@@ -1,5 +1,6 @@
-package core.kdb;
+package net.kdb4j.codecs;
 
+import net.kdb4j.utils.TimeUtils;
 import org.agrona.DirectBuffer;
 import org.agrona.LangUtil;
 import org.agrona.MutableDirectBuffer;

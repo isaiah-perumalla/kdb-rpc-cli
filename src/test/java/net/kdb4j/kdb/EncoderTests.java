@@ -1,13 +1,15 @@
-package core.kdb;
+package net.kdb4j.kdb;
 
+import net.kdb4j.codecs.KdbEncoder;
+import net.kdb4j.utils.TimeUtils;
 import org.agrona.ExpandableArrayBuffer;
 import org.agrona.MutableDirectBuffer;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
 
-import static core.kdb.KdbEncoder.bytesToHex;
 import static org.junit.Assert.assertEquals;
 
 public class EncoderTests {
@@ -19,7 +21,7 @@ public class EncoderTests {
         String[] sym = {"time", "bid", "ask"};
         int size = KdbEncoder.encodeSymArray(buffer, 0, sym, ByteOrder.LITTLE_ENDIAN);
         assertEquals(19, size);
-        assertEquals("0B000300000074696D65006269640061736B00", bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals("0B000300000074696D65006269640061736B00", KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
 
     }
 
@@ -30,7 +32,7 @@ public class EncoderTests {
         double[] vector = {100.5d, 200, 5000};
         int size = KdbEncoder.encodeDoubleArray(buffer, 0, vector, ByteOrder.LITTLE_ENDIAN);
         assertEquals(30, size);
-        assertEquals("09000300000000000000002059400000000000006940000000000088B340", bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals("09000300000000000000002059400000000000006940000000000088B340", KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
 
     }
 
@@ -41,7 +43,7 @@ public class EncoderTests {
         long[] vector = {100L, 200, 5000000, -1000};
         int size = KdbEncoder.encodeLongArray(buffer, 0, vector, ByteOrder.LITTLE_ENDIAN);
         assertEquals(38, size);
-        assertEquals("0700040000006400000000000000C800000000000000404B4C000000000018FCFFFFFFFFFFFF", bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals("0700040000006400000000000000C800000000000000404B4C000000000018FCFFFFFFFFFFFF", KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
 
     }
 
@@ -52,7 +54,7 @@ public class EncoderTests {
         char[] vector = {'c', 'a', 'z'};
         int size = KdbEncoder.encodeCharArray(buffer, 0, vector, ByteOrder.LITTLE_ENDIAN);
         assertEquals(9, size);
-        assertEquals("0A000300000063617A", bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals("0A000300000063617A", KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
 
     }
 
@@ -64,7 +66,7 @@ public class EncoderTests {
         TimeUtils timespanEncoder = new TimeUtils();
         int size = KdbEncoder.encodeNanosToTimspan(buffer, 0, vector, ByteOrder.LITTLE_ENDIAN);
         assertEquals(30, size);
-        assertEquals("10000300000001000000000000000200000000000000083129C4B28F1A09", bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals("10000300000001000000000000000200000000000000083129C4B28F1A09", KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
     }
 
     @Test
@@ -76,7 +78,7 @@ public class EncoderTests {
         String[] sym = new String[]{"abc", "efg", "xyz"};
         int size = KdbEncoder.encodeRpcCall(buffer, 0, ByteOrder.LITTLE_ENDIAN, ".u.upd".toCharArray(), "quote",  new Object[]{time, sym});
         assertEquals(87, size);
-        String bytesToHex = bytesToHex(buffer.byteArray(), 0, size);
+        String bytesToHex = KdbEncoder.bytesToHex(buffer.byteArray(), 0, size);
         String expected = "01000000570000000000030000000A00060000002E752E757064F571756F7465000000020000000700030000000100000000000000020000000000000040420F00000000000B0003000000616263006566670078797A00";
         assertEquals(pprint(bytesToHex), expected, bytesToHex);
 
@@ -90,7 +92,7 @@ public class EncoderTests {
         String[] sym = new String[]{"abc", "efg", "xyz"};
         int size = KdbEncoder.encodeRpcCall(buffer, 0, ByteOrder.LITTLE_ENDIAN, ".u.upd".toCharArray(), "quote",  new Object[]{time, sym});
         assertEquals(87, size);
-        String bytesToHex = bytesToHex(buffer.byteArray(), 0, size);
+        String bytesToHex = KdbEncoder.bytesToHex(buffer.byteArray(), 0, size);
         String expected = "01000000570000000000030000000A00060000002E752E757064F571756F7465000000020000000700030000000100000000000000020000000000000040420F00000000000B0003000000616263006566670078797A00";
         assertEquals(pprint(bytesToHex), expected, bytesToHex);
 
@@ -115,7 +117,7 @@ public class EncoderTests {
 
         int size = KdbEncoder.encodeList(buffer, 0, vector, ByteOrder.LITTLE_ENDIAN);
         assertEquals(50, size);
-        assertEquals("000003000000F5752E75706400F571756F7465000700030000000100000000000000020000000000000040420F0000000000", bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals("000003000000F5752E75706400F571756F7465000700030000000100000000000000020000000000000040420F0000000000", KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
     }
 
 }

@@ -1,7 +1,6 @@
 package kx;
 
-import core.kdb.TimeUtils;
-import kx.c;
+import net.kdb4j.utils.TimeUtils;
 
 import java.sql.Timestamp;
 import java.time.Instant;

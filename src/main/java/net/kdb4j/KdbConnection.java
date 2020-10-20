@@ -1,13 +1,14 @@
-package core.kdb;
+package net.kdb4j;
 
-import core.io.TcpChannelHandler;
-import core.io.TcpEndPoint;
+import net.kdb4j.codecs.KdbEncoder;
+import net.kdb4j.io.TcpChannelHandler;
+import net.kdb4j.io.TcpEndPoint;
 import org.agrona.DirectBuffer;
 import org.agrona.ExpandableDirectByteBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-public class KdbConnectionAdapter implements TcpChannelHandler {
+public class KdbConnection implements TcpChannelHandler {
     private final String creds;
     private final MutableDirectBuffer writeBuffer = new ExpandableDirectByteBuffer(1024);
     private final MutableDirectBuffer readBuffer = new ExpandableDirectByteBuffer(1024);
@@ -17,7 +18,7 @@ public class KdbConnectionAdapter implements TcpChannelHandler {
     private TcpEndPoint tcpEndpoint;
     private static final DirectBuffer SYNC_MSG = new UnsafeBuffer(KdbEncoder.SYNC_MSG);
 
-    public KdbConnectionAdapter(String creds, KdbEventHandler kdbHandler) {
+    public KdbConnection(String creds, KdbEventHandler kdbHandler) {
 
         this.creds = creds;
         this.kdbHandler = kdbHandler;

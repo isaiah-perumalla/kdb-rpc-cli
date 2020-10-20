@@ -1,4 +1,4 @@
-package core;
+package net.kdb4j;
 import org.agrona.concurrent.Agent;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.SigInt;

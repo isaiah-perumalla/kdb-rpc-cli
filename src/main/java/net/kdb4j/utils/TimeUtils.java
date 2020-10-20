@@ -1,5 +1,6 @@
-package core.kdb;
+package net.kdb4j.utils;
 
+import net.kdb4j.codecs.KdbEncoder;
 import org.agrona.MutableDirectBuffer;
 
 import java.nio.ByteOrder;

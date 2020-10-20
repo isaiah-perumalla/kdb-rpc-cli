@@ -1,7 +1,4 @@
-package core.kdb;
-
-import org.agrona.MutableDirectBuffer;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+package net.kdb4j.codecs;
 
 public enum KdbType {
     Dict(99, -1),

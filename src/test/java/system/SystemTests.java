@@ -1,9 +1,9 @@
 package system;
 
-import core.io.TcpTransportPoller;
-import core.kdb.KdbConnectionAdapter;
-import core.kdb.KdbEncoder;
-import core.kdb.KdbEventHandler;
+import net.kdb4j.io.TcpTransportPoller;
+import net.kdb4j.KdbConnection;
+import net.kdb4j.codecs.KdbEncoder;
+import net.kdb4j.KdbEventHandler;
 import kx.TestUtils;
 import org.agrona.ExpandableDirectByteBuffer;
 import org.agrona.MutableDirectBuffer;
@@ -17,7 +17,7 @@ public class SystemTests {
     private  static MutableDirectBuffer writeBuffer = new ExpandableDirectByteBuffer(4096);
     public static void main(String[] args) throws IOException, InterruptedException {
         KdbEventHandler kdbHandler = (k) -> publishData(k);
-        KdbConnectionAdapter connectionHandler = new KdbConnectionAdapter("isaiahp", kdbHandler);
+        KdbConnection connectionHandler = new KdbConnection("isaiahp", kdbHandler);
         TcpTransportPoller tcpTransportPoller = new TcpTransportPoller();
 
         tcpTransportPoller.addEndpoint("localhost", 5010, connectionHandler);
@@ -32,7 +32,7 @@ public class SystemTests {
 
     }
 
-    private static int publishData(KdbConnectionAdapter k) {
+    private static int publishData(KdbConnection k) {
         if(k.isWritable()) {
 
             MutableDirectBuffer buff = writeBuffer;

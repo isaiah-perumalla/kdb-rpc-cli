@@ -1,4 +1,4 @@
-package core.io;
+package net.kdb4j.io;
 
 import org.agrona.LangUtil;
 import org.agrona.collections.ArrayUtil;

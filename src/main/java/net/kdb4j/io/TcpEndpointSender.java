@@ -1,4 +1,4 @@
-package core.io;
+package net.kdb4j.io;
 
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;

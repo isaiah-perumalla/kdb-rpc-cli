@@ -1,16 +1,17 @@
-package core.kdb;
+package net.kdb4j.kdb;
 
 import kx.TestUtils;
 import kx.c;
+import net.kdb4j.codecs.KdbEncoder;
 import org.agrona.ExpandableArrayBuffer;
 import org.agrona.MutableDirectBuffer;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
-import static core.kdb.KdbEncoder.bytesToHex;
 import static org.junit.Assert.assertEquals;
 
 
@@ -28,7 +29,7 @@ public class TickerPlantEncoderTest {
         int size = KdbEncoder.encodeRpcCall(buffer, offset, ByteOrder.BIG_ENDIAN, function, "quote", vector);
         byte[] expectedBytes = k.serialize(0, new Object[] {function, "quote", vector}, false);
 
-        assertEquals(bytesToHex(expectedBytes, 0, expectedBytes.length), bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals(KdbEncoder.bytesToHex(expectedBytes, 0, expectedBytes.length), KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class TickerPlantEncoderTest {
             int size = KdbEncoder.encodeRpcCall(buffer, offset, ByteOrder.BIG_ENDIAN, function, "quote", data);
 
 
-            assertEquals(bytesToHex(expectedBytes, 0, expectedBytes.length), bytesToHex(buffer.byteArray(), 0, size));
+            Assert.assertEquals(KdbEncoder.bytesToHex(expectedBytes, 0, expectedBytes.length), KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
         }
 
     }
