@@ -5,6 +5,7 @@ import core.kdb.KdbEncoder;
 import core.kdb.TimeUtils;
 import org.agrona.ExpandableArrayBuffer;
 
+import java.nio.ByteOrder;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,7 +58,7 @@ public class FeedTest {
                 tsVector.setKdbTimespanAt(i, time[i].j);
             }
             decorateSym(sym, "-encoder");
-            int size = KdbEncoder.encodeRpcCall(buffer, 0, ".u.upd".toCharArray(), "quote",  new Object[]{tsVector, sym, bid, ask, bsize, asize});
+            int size = KdbEncoder.encodeRpcCall(buffer, 0, ByteOrder.LITTLE_ENDIAN, ".u.upd".toCharArray(), "quote",  new Object[]{tsVector, sym, bid, ask, bsize, asize});
             c.writeSocket(buffer.byteArray(), 0, size);
             // if we did want to supply a flip, it can be done as
 //            c.ks(".u.upd", "quote", new c.Flip(new c.Dict(cols, new Object[]{time, sym, bid, ask, bsize, asize, mode, ex})));

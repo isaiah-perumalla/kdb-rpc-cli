@@ -3,7 +3,7 @@ package core.io;
 import org.agrona.DirectBuffer;
 
 public interface TcpChannelHandler {
-    int onConnected(TcpTransportPoller.TcpEndPoint tcpEndPoint);
+    int onConnected(TcpEndPoint tcpEndPoint);
 
-    int onBytesReceived(TcpTransportPoller.TcpEndPoint tcpEndPoint, DirectBuffer directBuffer, int offset, int length);
+    int onBytesReceived(TcpEndPoint tcpEndPoint, DirectBuffer directBuffer, int offset, int length);
 }

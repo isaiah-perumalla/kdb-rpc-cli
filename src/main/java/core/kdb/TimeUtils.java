@@ -2,6 +2,7 @@ package core.kdb;
 
 import org.agrona.MutableDirectBuffer;
 
+import java.nio.ByteOrder;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -32,8 +33,8 @@ public class TimeUtils {
             this.values = new long[size];
         }
 
-        public int encode(MutableDirectBuffer buffer, int offset) {
-            return KdbEncoder.encodeNanosToTimspan(buffer, offset, values);
+        public int encode(MutableDirectBuffer buffer, int offset, ByteOrder order) {
+            return KdbEncoder.encodeNanosToTimspan(buffer, offset, values, order);
         }
 
         public void setNanoTimeAt(int i, long nanos) {

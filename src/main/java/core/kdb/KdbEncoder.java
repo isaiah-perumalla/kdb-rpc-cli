@@ -1,10 +1,13 @@
 package core.kdb;
 
-import org.agrona.ExpandableArrayBuffer;
+import org.agrona.DirectBuffer;
 import org.agrona.LangUtil;
 import org.agrona.MutableDirectBuffer;
+import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class KdbEncoder {
     public static final int SizeOfType = 1;
@@ -14,12 +17,13 @@ public class KdbEncoder {
     public static final int SIZE_OF_LONG = 8;
     private static final int SIZE_OF_TIMESPAN = 8;
     private static final String ENCODING = "ISO-8859-1";
+    public static final DirectBuffer SYNC_MSG = encodeSync(ByteOrder.LITTLE_ENDIAN);
 
-    public static int encodeSymArray(MutableDirectBuffer buffer, int offset, String[] strings) {
+    public static int encodeSymArray(MutableDirectBuffer buffer, int offset, String[] strings, ByteOrder byteOrder) {
         int position = offset;
         buffer.putByte(position, KdbType.Sym.type());
         position += SizeOfType + 1;
-        buffer.putInt(position, strings.length);
+        buffer.putInt(position, strings.length, byteOrder);
         position += SIZE_OF_LENGTH;
         for (int i = 0; i < strings.length; i++) {
             String v = strings[i];
@@ -42,39 +46,39 @@ public class KdbEncoder {
         return new String(hexChars);
     }
 
-    public static int encodeDoubleArray(MutableDirectBuffer buffer, int offset, double[] vector) {
+    public static int encodeDoubleArray(MutableDirectBuffer buffer, int offset, double[] vector, ByteOrder BYTE_ORDER) {
         int position = offset;
         buffer.putByte(position, KdbType.Double.type());
         position += SizeOfType + 1;
-        buffer.putInt(position, vector.length);
+        buffer.putInt(position, vector.length, BYTE_ORDER);
         position += SIZE_OF_LENGTH;
         for (int i = 0; i < vector.length; i++) {
             double v = vector[i];
-            buffer.putDouble(position, v);
+            buffer.putDouble(position, v, BYTE_ORDER);
             position += SIZE_OF_DOUBLE;
         }
         return position - offset;
     }
 
-    public static int encodeLongArray(MutableDirectBuffer buffer, int offset, long[] vector) {
+    public static int encodeLongArray(MutableDirectBuffer buffer, int offset, long[] vector, ByteOrder BYTE_ORDER) {
         int position = offset;
         buffer.putByte(position, KdbType.Long.type());
         position += SizeOfType + 1;
-        buffer.putInt(position, vector.length);
+        buffer.putInt(position, vector.length, BYTE_ORDER);
         position += SIZE_OF_LENGTH;
         for (int i = 0; i < vector.length; i++) {
             long v = vector[i];
-            buffer.putLong(position, v);
+            buffer.putLong(position, v, BYTE_ORDER);
             position += SIZE_OF_LONG;
         }
         return position - offset;
     }
 
-    public static int encodeCharArray(MutableDirectBuffer buffer, int offset, char[] vector) {
+    public static int encodeCharArray(MutableDirectBuffer buffer, int offset, char[] vector, ByteOrder byteOrder) {
         int position = offset;
         buffer.putByte(position, KdbType.Char.type());
         position += SizeOfType + 1;
-        buffer.putInt(position, vector.length);
+        buffer.putInt(position, vector.length, byteOrder);
         position += SIZE_OF_LENGTH;
         for (int i = 0; i < vector.length; i++) {
             char v = vector[i];
@@ -84,26 +88,26 @@ public class KdbEncoder {
         return position - offset;
     }
 
-    public static int encodeNanosToTimspan(MutableDirectBuffer buffer, int offset, long[] nanoTimes) {
+    public static int encodeNanosToTimspan(MutableDirectBuffer buffer, int offset, long[] nanoTimes, ByteOrder order) {
         int position = offset;
         buffer.putByte(position, KdbType.Timespan.type());
         position += SizeOfType + 1;
-        buffer.putInt(position, nanoTimes.length);
+        buffer.putInt(position, nanoTimes.length, order);
         position += SIZE_OF_LENGTH;
         for (int i = 0; i < nanoTimes.length; i++) {
             long t = nanoTimes[i];
 
-            buffer.putLong(position, t);
+            buffer.putLong(position, t, order);
             position += SIZE_OF_TIMESPAN;
         }
         return position - offset;
     }
 
-    public static int encodeList(MutableDirectBuffer buffer, int offset, Object[] vector) {
+    public static int encodeList(MutableDirectBuffer buffer, int offset, Object[] vector, ByteOrder byteOrder) {
         int position = offset;
         buffer.putByte(position, KdbType.List.type());
         position += SizeOfType + 1;
-        buffer.putInt(position, vector.length);
+        buffer.putInt(position, vector.length, byteOrder);
         position += SIZE_OF_LENGTH;
 
         for (int i = 0; i < vector.length; i++) {
@@ -121,28 +125,28 @@ public class KdbEncoder {
             }
             else if(v instanceof TimeUtils.TimespanVector) {
                 TimeUtils.TimespanVector t = (TimeUtils.TimespanVector) v;
-                int size = t.encode(buffer, position);
+                int size = t.encode(buffer, position, byteOrder);
                 position += size;
             }
             else if(v instanceof char[]) {
                 char[] c = (char[]) v;
-                position += encodeCharArray(buffer, position, c);
+                position += encodeCharArray(buffer, position, c, byteOrder);
             }
             else if(v instanceof long[]) {
                 long[] l = (long[]) v;
-                position += encodeLongArray(buffer, position, l);
+                position += encodeLongArray(buffer, position, l, byteOrder);
             }
             else if(v instanceof double[]) {
                 double[] d = (double[]) v;
-                position += encodeDoubleArray(buffer, position, d);
+                position += encodeDoubleArray(buffer, position, d, byteOrder);
             }
             else if (v instanceof String[]) {
                 String[] s = (String[]) v;
-                position += encodeSymArray(buffer, position, s);
+                position += encodeSymArray(buffer, position, s, byteOrder);
             }
             else if(v instanceof Object[]) {
                 Object[] o = (Object[]) v;
-                position += encodeList(buffer, position, o);
+                position += encodeList(buffer, position, o, byteOrder);
             }
             else {
                 throw new UnsupportedOperationException("cannot encode type " + v.getClass());
@@ -152,17 +156,30 @@ public class KdbEncoder {
         return position - offset;
     }
 
-    public static int encodeRpcCall(MutableDirectBuffer buffer, int offset,   Object ... args) {
-        int size = encodeList(buffer, offset + 8, args);
-        encodeHeader(buffer, offset, size + 8);
+    public static int encodeRpcCall(MutableDirectBuffer buffer, int offset, ByteOrder byteOrder, Object... args) {
+        int size = encodeList(buffer, offset + 8, args, byteOrder);
+        encodeHeader(buffer, offset, size + 8, byteOrder);
         return size + 8;
     }
 
-    public static void encodeHeader(MutableDirectBuffer buffer, int offset, int messageSize) {
-        buffer.putByte(offset, (byte) 1); //little endian
-        buffer.putInt(offset + 4, messageSize);
+    public static void encodeHeader(MutableDirectBuffer buffer, int offset, int messageSize, ByteOrder byteOrder) {
+        buffer.putByte(offset, encodeByteOrder(byteOrder)); //little endian
+        buffer.putInt(offset + 4, messageSize, byteOrder);
     }
 
+    private static byte encodeByteOrder(ByteOrder byteOrder) {
+        return byteOrder == ByteOrder.LITTLE_ENDIAN ? (byte) 1 : 0;
+    }
+
+    public static DirectBuffer encodeSync(ByteOrder byteOrder) {
+        UnsafeBuffer buffer = new UnsafeBuffer(ByteBuffer.allocate(14));
+        buffer.putByte(0, encodeByteOrder(byteOrder));
+        buffer.putInt(4, 14, byteOrder);
+                buffer.putByte(8, (byte) 10);
+                buffer.putInt(10, 0, byteOrder);
+        return buffer;
+
+    }
     public static int encodeLogin(MutableDirectBuffer writeBuffer, int offset, String creds) {
         try {
             byte[] bytes = creds.getBytes(ENCODING);
