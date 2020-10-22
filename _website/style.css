@@ -1,0 +1,440 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@600&family=Teko:wght@500&display=swap');
+.nav ul{
+    list-style:none;
+    margin:0;
+    padding:0
+}
+.nav ul li{
+    width:auto;
+    display:inline-block
+}
+.nav-top{
+    position:fixed;
+    z-index:10;
+    background:#2f3030;
+    width:95%;
+    height:80px;
+    padding:0 2.5%
+}
+.nav-top ul li{
+    float:right
+}
+.nav-top ul li.logo{
+    margin-top:10px;
+    line-height:60px
+}
+.nav-top ul li:first-child{
+    float:left
+}
+.nav-top ul li svg{
+    margin-top:10px;
+    width:60px;
+    height:60px
+}
+.nav-top ul li svg g{
+    fill:#d8e1ed;
+}
+.nav-top ul li svg:hover g{
+    fill:#8f9c9c
+}
+.nav-side{
+    position:fixed;
+    z-index:9;
+    top:0;
+    width:260px;
+    padding:80px 0 10px 0;
+    background-color:#e6ebf2;
+    height:100%;
+    left:-260px;
+    transition:300ms ease-in-out
+}
+.nav-side.slide-out{
+    left:0
+}
+.nav-side ul{
+    margin:0;
+    padding:0
+}
+.nav-side ul li{
+    width:100%;
+    background:linear-gradient(to right, #b6c1c5 0%, rgb(214, 144, 52) 49.999%, #E6EBF2 50%, #E6EBF2 100%);
+    background-size:300%;
+    background-position:100%;
+    background-repeat:no-repeat;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    border-left:5px solid transparent;
+    transition:300ms ease-out;
+    color:#444;
+    position:relative
+}
+.nav-side ul li a{
+    width:83%;
+    padding:20px 5% 20px 10%;
+    cursor:pointer;
+    display:block
+}
+.nav-side ul li.active{
+    border-color:#34ced6
+}
+.nav-side ul li:hover{
+    background-position:10%;
+    color:#f2f2f2;
+    border-color:transparent
+}
+
+.slide-out-half{
+    margin-left:150px
+}
+@media screen and (max-width: 1000px){
+    
+}
+.button{
+    padding:10px 40px;
+    line-height:16px;
+    font-size:14px
+}
+.button a{
+    position:relative;
+    display:block;
+    width:100%;
+    height:100%;
+    left:0;
+    top:0;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:600;
+    text-transform:uppercase
+}
+.button-primary{
+    color:#fff;
+    background:linear-gradient(to right, #34CED6, #114B8B);
+    background-size:200%;
+    background-position:50%;
+    outline:0;
+    border:0;
+    border-radius:3px;
+    transition:500ms
+}
+.button-primary:hover{
+    background-position:0%
+}
+.button-primary:active{
+    transform:scale(1.2);
+    -o-transform:scale(1.2);
+    -ms-transform:scale(1.2);
+    -moz-transform:scale(1.2);
+    -webkit-transform:scale(1.2)
+}
+.button-rounded{
+    border-radius:21px
+}
+.container{
+    position:relative;
+    padding:80px 0;
+    width:80%;
+    overflow:hidden;
+    white-space:no-wrap;
+    left:10%
+}
+.container[role=main]{
+    transition:300ms ease-out;
+    overflow-x:hidden;
+   
+}
+
+.content-heading{
+    padding:20px 5%;
+    width:90%;
+    box-shadow:0 0 5px rgba(147,162,181,.4)
+}
+.content-heading h3{
+    font-family: 'Source Code Pro', monospace;
+    font-weight:300
+}
+.content-body{
+    padding:40px 5% 20px 5%
+}
+.content-flex{
+    display:flex;
+    flex-wrap:wrap
+}
+.content-flex img{
+    max-width:100%;
+    margin:0 auto
+}
+.content-flex .heading{
+    flex:1 0 100%
+}
+.content-split-1{
+    flex:1 0 100%
+}
+.content-split-2{
+    flex:1 0 50%
+}
+.content-split-3{
+    flex:1 0 33.3333%
+}
+.content-split-4{
+    flex:1 0 25%
+}
+.content-split-5{
+    flex:1 0 20%
+}
+.content-split-6{
+    flex:1 0 16.6666%
+}
+.content-split-7{
+    flex:1 0 14.2857%
+}
+.content-split-8{
+    flex:1 0 12.5%
+}
+.content-split-9{
+    flex:1 0 11.1111%
+}
+.content-split-10{
+    flex:1 0 10%
+}
+.content-split-container{
+    padding:20px
+}
+.content-split img{
+    width:100%
+}
+.content-split .heading-primary{
+    margin-top:20px
+}
+.heading-primary{
+    color:#444
+}
+.list{
+    list-style:none
+}
+.list li{
+    padding:5px 0
+}
+.list li::before{
+    content:"•";
+    color:#111;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:700;
+    display:inline-block;
+    width:1em;
+    margin-left:-1em
+}
+.list li ul{
+    list-style:none;
+    padding-top:10px
+}
+.list li ul li{
+    padding:5px 0
+}
+.list li ul li::before{
+    content:"";
+    border:1px solid #111;
+    border-radius:50%;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:700;
+    display:inline-block;
+    width:.25em;
+    height:.25em;
+    position:relative;
+    margin:0 1em .2em -1em
+}
+.list-primary li::before{
+    color:#c0c4c5
+}
+.list-primary li ul li::before{
+    border-color:#34ced6
+}
+.list-primary-2 li::before{
+    color:#34ced6
+}
+.list-primary-2 li ul li::before{
+    border-color:#178ebd
+}
+.badge{
+    padding:10px 20px;
+    border-radius:5px;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:600
+}
+.badge-primary{
+    background:linear-gradient(to bottom right, #34CED6, #178ebd);
+    color:#fff
+}
+.copyright{
+    text-align:center;
+    font-family: 'Source Code Pro', monospace;
+    font-size:14px;
+    padding-bottom:40px
+}
+@media screen and (max-width: 1000px){
+    .container[role=main]:before{
+        content:"";
+        position:absolute;
+        background:linear-gradient(to top, rgba(23, 142, 189, 0.2), rgba(17, 75, 139, 0.05));
+        transform:rotate(70deg);
+        width:200px;
+        height:280px;
+        right:100px;
+        top:-130px
+    }
+    .container[role=main]::after{
+        content:"";
+        position:absolute;
+        background:linear-gradient(to top, rgba(54, 245, 255, 0.3), rgba(23, 142, 189, 0.15));
+        transform:rotate(-50deg);
+        width:200px;
+        height:430px;
+        right:-100px;
+        top:-130px
+    }
+    .content-body{
+        padding:40px 0% 20px 0%
+    }
+    .content-split-1{
+        flex:1 0 100%
+    }
+    .content-split-2{
+        flex:1 0 100%
+    }
+    .content-split-3{
+        flex:1 0 100%
+    }
+    .content-split-4{
+        flex:1 0 100%
+    }
+    .content-split-5{
+        flex:1 0 100%
+    }
+    .content-split-6{
+        flex:1 0 100%
+    }
+    .content-split-7{
+        flex:1 0 100%
+    }
+    .content-split-8{
+        flex:1 0 100%
+    }
+    .content-split-9{
+        flex:1 0 100%
+    }
+    .content-split-10{
+        flex:1 0 100%
+    }
+}
+@media screen and (max-width: 600px){
+    .container[role=main]:before{
+        width:100px;
+        height:150px;
+        right:50px;
+        top:0
+    }
+    .container[role=main]::after{
+        width:100px;
+        height:200px;
+        right:-50px;
+        top:0
+    }
+}
+html{
+    margin:0;
+    background-color:#d8e1ed
+}
+body{
+    font-family: 'Source Code Pro', monospace;
+    font-weight:400;
+    margin:0;
+    background-color:#f2f2f2;
+    background:linear-gradient(to top right, white 60%, rgba(111, 114, 114, 0.6))
+}
+h1,h2,h3,h4,h5,h6{
+    margin:0;
+    padding-bottom:12px;
+    padding-top:4px
+}
+h2{
+    font-size:40px
+}
+h3{
+    font-size:36px;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:700
+}
+h4{
+    font-size:24px;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:500
+}
+h5{
+    font-size:20px;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:500
+}
+pre{
+    padding:5px 5px;
+    border-radius:5px;
+    background-color:#e6ebf2;
+    white-space:pre-wrap;
+    white-space:-moz-pre-wrap;
+    white-space:-pre-wrap;
+    white-space:-o-pre-wrap;
+    word-wrap:break-word
+}
+table{
+    width:100%;
+    position:relative;
+    margin-top:30px;
+    margin-bottom:20px;
+    box-shadow:0 0 20px #d8e1ed
+}
+table::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:3px;
+    top:-3px;
+    left:0;
+    
+}
+table thead th{
+    text-align:left;
+    padding:20px;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:300;
+    font-size:18px
+}
+table tbody td{
+    padding:10px;
+    font-family: 'Source Code Pro', monospace;
+    font-weight:300;
+    border-top:1px solid #e6ebf2
+}
+table pre{
+    display:inline;
+    padding:10px;
+    margin:0 10px
+}
+.logo h3 p{
+    margin-left:0;
+   align-content: center
+    font-size: 36px;
+    font-family: 'Indie Flower', cursive;
+    font-weight: 800;
+    background:linear-gradient(to bottom left, #e6ebf2, #d8e1ed);
+    display:inline;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent
+}
+pre {
+    background-color: #444;
+    color: #E6EBF2;
+}
+code{
+    font-family:"Roboto-Mono",monospace;
+    font-weight:200
+}
+/*# sourceMappingURL=style.css.map */
