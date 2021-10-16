@@ -1,4 +1,4 @@
-package net.kdb4j.kdb;
+package net.kdb4j;
 
 import kx.TestUtils;
 import kx.c;
@@ -29,7 +29,7 @@ public class TickerPlantEncoderTest {
         int size = KdbEncoder.encodeRpcCall(buffer, offset, ByteOrder.BIG_ENDIAN, function, "quote", vector);
         byte[] expectedBytes = k.serialize(0, new Object[] {function, "quote", vector}, false);
 
-        Assert.assertEquals(KdbEncoder.bytesToHex(expectedBytes, 0, expectedBytes.length), KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
+        Assert.assertEquals(ByteUtils.bytesToHex(expectedBytes, 0, expectedBytes.length), ByteUtils.bytesToHex(buffer.byteArray(), 0, size));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TickerPlantEncoderTest {
             int size = KdbEncoder.encodeRpcCall(buffer, offset, ByteOrder.BIG_ENDIAN, function, "quote", data);
 
 
-            Assert.assertEquals(KdbEncoder.bytesToHex(expectedBytes, 0, expectedBytes.length), KdbEncoder.bytesToHex(buffer.byteArray(), 0, size));
+            Assert.assertEquals(ByteUtils.bytesToHex(expectedBytes, 0, expectedBytes.length), ByteUtils.bytesToHex(buffer.byteArray(), 0, size));
         }
 
     }

@@ -3,10 +3,10 @@ package net.kdb4j;
 import net.kdb4j.codecs.KdbEncoder;
 import net.kdb4j.io.TcpChannelHandler;
 import net.kdb4j.io.TcpEndPoint;
-import org.agrona.DirectBuffer;
-import org.agrona.ExpandableDirectByteBuffer;
-import org.agrona.MutableDirectBuffer;
+import org.agrona.*;
 import org.agrona.concurrent.UnsafeBuffer;
+
+import java.nio.ByteOrder;
 
 public class KdbConnection implements TcpChannelHandler {
     private final String creds;
@@ -34,22 +34,35 @@ public class KdbConnection implements TcpChannelHandler {
 
     @Override
     public int onBytesReceived(TcpEndPoint tcpEndPoint, DirectBuffer directBuffer, int offset, int length) {
+        assert length > 0;
         if(!this.isSessionConnected) {
             assert length ==  1;
             byte reply = directBuffer.getByte(offset);
             this.capabilities = reply;
             this.isSessionConnected = true;
             this.tcpEndpoint = tcpEndPoint;
-            return this.kdbHandler.sessionConnected(this);
+            return this.kdbHandler.onConnected(this);
         }
         else {
-            for (int i = 0; i < length; i++) {
-                System.out.print(directBuffer.getByte(offset + i));
-                System.out.print(";");
+            if(-128 == directBuffer.getByte(offset + 8)) {
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 8; i < length; i++) {
+                    sb.append((char)directBuffer.getByte(i+offset));
+
+                }
+                System.err.println("error " + sb.toString());
             }
+            System.out.println(ByteUtils.bytesToHex(directBuffer, offset, length));
             return length;
         }
 
+    }
+
+    @Override
+    public int onDisconnected(TcpEndPoint tcpEndPoint) {
+        this.isSessionConnected = false;
+        return  this.kdbHandler.onDisconnected(this);
     }
 
     public boolean isWritable() {
@@ -70,5 +83,13 @@ public class KdbConnection implements TcpChannelHandler {
 
     public int write(MutableDirectBuffer writeBuffer, int offset, int length) {
         return tcpEndpoint.write(writeBuffer, offset, length);
+    }
+
+    public int k(CharSequence command) {
+
+        ExpandableArrayBuffer e = new ExpandableArrayBuffer();
+        int size = KdbEncoder.encodeCharsequence(e, 0, command, ByteOrder.LITTLE_ENDIAN );
+        return tcpEndpoint.write(e, 0, size);
+
     }
 }

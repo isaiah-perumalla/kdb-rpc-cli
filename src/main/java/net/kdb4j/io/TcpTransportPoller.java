@@ -33,12 +33,12 @@ public class TcpTransportPoller extends TransportPoller {
         }
     }
 
-    public void addEndpoint(String host, int port, TcpChannelHandler connectionHandler) throws IOException {
+    public void addEndpoint(int id, String host, int port, TcpChannelHandler connectionHandler) throws IOException {
         InetSocketAddress remote = new InetSocketAddress(host, port);
         SocketChannel channel = SocketChannel.open();
         channel.configureBlocking(false);
 
-        TcpEndPoint tcpEndPoint = new TcpEndPoint(remote, channel, this,  connectionHandler);
+        TcpEndPoint tcpEndPoint = new TcpEndPoint(remote, channel, this,  connectionHandler, id);
         endPoints = ArrayUtil.add(endPoints, tcpEndPoint);
         registerForOpen(tcpEndPoint);
         channel.connect(remote);

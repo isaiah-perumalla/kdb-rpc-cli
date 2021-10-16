@@ -9,29 +9,23 @@ import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
 
 public class TcpEndPoint implements TcpEndpointSender {
+    private static final int SOCKET_CLOSED = -1;
     private final InetSocketAddress remote;
     final SocketChannel channel;
     private final TcpChannelHandler connectionHandler;
     private final TcpTransportPoller tcpPoller;
 
     private final MutableDirectBuffer readBuffer = new ExpandableArrayBuffer(4096);
-    private final ByteBuffer readByteBuffer = byteBuffer(readBuffer.byteArray());
-    private final MutableDirectBuffer writeBuffer = new ExpandableArrayBuffer(4096);
     private int pendingBytes;
+    private final int id;
 
-    private static ByteBuffer byteBuffer(byte[] array) {
-        ByteBuffer wrap = ByteBuffer.wrap(array);
-        wrap.order(ByteOrder.LITTLE_ENDIAN);
-        return wrap;
-    }
-
-
-    public TcpEndPoint(InetSocketAddress remote, SocketChannel channel, TcpTransportPoller tcpTransportPoller, TcpChannelHandler connectionHandler) {
+    public TcpEndPoint(InetSocketAddress remote, SocketChannel channel, TcpTransportPoller tcpTransportPoller, TcpChannelHandler connectionHandler, int id) {
 
         this.remote = remote;
         this.channel = channel;
         this.connectionHandler = connectionHandler;
         this.tcpPoller = tcpTransportPoller;
+        this.id = id;
     }
 
     public int onConnected() {
@@ -56,7 +50,9 @@ public class TcpEndPoint implements TcpEndpointSender {
         final int startPosition = byteBuff.position();
 
         try {
-            return writeByteBuff(byteBuff, offset, length);
+            final int written = writeByteBuff(byteBuff, offset, length);
+            final int pending = length - written;
+            return written;
         } catch (IOException e) {
             LangUtil.rethrowUnchecked(e);
         }
@@ -84,15 +80,21 @@ public class TcpEndPoint implements TcpEndpointSender {
 
     public int onRead() {
         try {
+
             ByteBuffer byteBuffer = ByteBuffer.wrap(readBuffer.byteArray());
-            int read = channel.read(byteBuffer);
-            return connectionHandler.onBytesReceived(this, readBuffer, 0, read);
+            final int read = channel.read(byteBuffer);
+            if(read == SOCKET_CLOSED) {
+                channel.close();
+                return connectionHandler.onDisconnected(this);
+            }
+            else if (read > 0){
+                return connectionHandler.onBytesReceived(this, readBuffer, 0, read);
+            }
         } catch (IOException e) {
             LangUtil.rethrowUnchecked(e);
         }
         return 0;
     }
-
 
 
     @Override

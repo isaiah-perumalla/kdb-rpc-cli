@@ -1,0 +1,19 @@
+FROM debian:bullseye-slim
+ARG DEBIAN_FRONTEND=noninteractive
+
+COPY ./q /root/q
+COPY ./ticker /root/ticker
+COPY ./tick.sh /root
+RUN chmod 744 /root/tick.sh
+
+RUN dpkg --add-architecture i386 # enable 32bit apps
+RUN apt-get update && apt-get upgrade -y && apt install libc6-i386 -y && rm -rf /var/lib/apt/lists/*
+
+## port for tickerplant
+EXPOSE 5010
+# port 5011 for rdb
+EXPOSE 5011
+#WORKDIR /root/ticker
+#Start tickeplant
+CMD ["/root/tick.sh"]
+#CMD ["nohup", "/root/q/l32/q", "tick/r.q",  "-p 5011 > /var/log/rdb.log </dev/null &"]
