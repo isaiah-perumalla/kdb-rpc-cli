@@ -1,3 +1,5 @@
+package net.kdb4j;
+
 import org.agrona.DirectBuffer;
 
 public class ByteUtils {

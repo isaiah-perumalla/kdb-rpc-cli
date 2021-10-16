@@ -1,5 +1,7 @@
 package net.kdb4j;
 
 public interface KdbEventHandler {
-    int sessionConnected(KdbConnection c);
+    int onConnected(KdbConnection c);
+
+    int onDisconnected(KdbConnection c);
 }

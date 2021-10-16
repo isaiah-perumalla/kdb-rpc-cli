@@ -616,7 +616,7 @@ public class c {
     /**
      * null long, i.e. 0N
      */
-    static long nj = Long.MIN_VALUE;
+    final static long nj = Long.MIN_VALUE;
     /**
      * null float, i.e. 0Nf or 0n
      */

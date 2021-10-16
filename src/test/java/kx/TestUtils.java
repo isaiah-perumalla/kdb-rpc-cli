@@ -15,6 +15,14 @@ public class TestUtils {
         return tsVector;
     }
 
+    public static TimeUtils.TimestampVector getTimestampVector(c.Timespan[] time) {
+        TimeUtils.TimestampVector tsVector = new TimeUtils.TimestampVector(time.length);
+        for (int i = 0; i < time.length; i++) {
+            tsVector.setNanoTimeAt(i, System.nanoTime());
+        }
+        return tsVector;
+    }
+
     public static Object[] generateData(boolean useTimespan) {
         // Bulk row insert - more efficient
         String[] syms = new String[]{"AAPL", "AMZN", "MSFT", "GOOG", "GOOGL", "BABA", "FB", "TSM", "NVDA", "TSLA", "JNJ", "WMT",
@@ -49,7 +57,7 @@ public class TestUtils {
 //        c.k("");
 
 
-        Object timespanVector = useTimespan ? time : getTimespanVector(time);
-        return new Object[]{timespanVector, sym, bid, ask, bsize, asize};
+        Object timespanVector = useTimespan ? time : getTimestampVector(time);
+        return new Object[]{timespanVector, sym, bid, ask, bsize, asize, mode, ex};
     }
 }

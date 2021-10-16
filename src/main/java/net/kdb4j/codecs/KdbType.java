@@ -31,7 +31,11 @@ public enum KdbType {
         return (byte) typeCode;
     }
 
-    public byte scalarTypeCode() {
+    public byte atomTypeCode() {
         return (byte) (-1 * type());
+    }
+
+    public int primitiveSize() {
+        return primitiveSize;
     }
 }

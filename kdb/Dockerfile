@@ -18,9 +18,10 @@ RUN LIBC32_DEB=libc6-i386_2.19-18+deb8u10_amd64.deb \
 	&& rm -rf /var/lib/apk/lists/*
 ARG DEBIAN_FRONTEND=noninteractive
 #http://ftp.us.debian.org/debian/pool/main/g/glibc/libc6-i386_2.32-4_amd64.deb
-COPY ./q /root/q
+COPY ./q32/q /q
 COPY ./ticker /root/ticker
 COPY ./tick.sh /root
+RUN mkdir /data
 RUN chmod 744 /root/tick.sh
 
 ## port for tickerplant
@@ -29,5 +30,4 @@ EXPOSE 5010
 EXPOSE 5011
 #WORKDIR /root/ticker
 #Start tickeplant
-CMD ["/root/tick.sh"]
-#CMD ["nohup", "/root/q/l32/q", "tick/r.q",  "-p 5011 > /var/log/rdb.log </dev/null &"]
+CMD ["sh", "/root/tick.sh"]

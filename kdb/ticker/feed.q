@@ -81,7 +81,7 @@ init:{
  len:floor d%113;
  feedm each `timespan$o+asc len?d;}
 
-h:neg hopen `::5010
+h:neg hopen `::5010:tick:tick
 / h(".u.upd";`quote;q 15);
 / h(".u.upd";`trade;t 5);
 

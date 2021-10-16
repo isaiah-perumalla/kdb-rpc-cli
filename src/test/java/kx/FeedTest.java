@@ -49,7 +49,7 @@ public class FeedTest {
             // Note that we don't need to supply a flip with columns names for .u.upd.
             // Just the column data in the correct order is sufficient.
             c.ks(".u.upd", "quote",  new Object[]{time, sym, bid, ask, bsize, asize});
-            c.k("");
+            Object r = c.k("");
             ExpandableArrayBuffer buffer = new ExpandableArrayBuffer(1024);
             TimeUtils.TimespanVector tsVector = new TimeUtils.TimespanVector(time.length);
             for (int i = 0; i < time.length; i++) {
@@ -57,10 +57,11 @@ public class FeedTest {
             }
             decorateSym(sym, "-encoder");
             int size = KdbEncoder.encodeRpcCall(buffer, 0, ByteOrder.LITTLE_ENDIAN, ".u.upd".toCharArray(), "quote",  new Object[]{tsVector, sym, bid, ask, bsize, asize});
-            c.writeSocket(buffer.byteArray(), 0, size);
+//            c.writeSocket(buffer.byteArray(), 0, size);
             // if we did want to supply a flip, it can be done as
 //            c.ks(".u.upd", "quote", new c.Flip(new c.Dict(cols, new Object[]{time, sym, bid, ask, bsize, asize, mode, ex})));
-            c.k(""); // sync chase ensures the remote has processed all msgs
+            Object result = c.k(""); // sync chase ensures the remote has processed all msgs
+            System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

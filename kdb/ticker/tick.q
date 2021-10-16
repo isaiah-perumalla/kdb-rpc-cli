@@ -17,7 +17,7 @@
 /2005.11.28 zero-end-of-day
 /2005.10.28 allow`time on incoming
 /2005.10.10 zero latency
-"kdb+tick 2.8 2014.03.12"
+"running ticker using tick/",(src:first .z.x,enlist"sym"),".q"
 
 /q tick.q SRC [DST] [-p 5010] [-o h]
 system"l tick/",(src:first .z.x,enlist"sym"),".q"

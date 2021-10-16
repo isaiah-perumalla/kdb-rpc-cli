@@ -17,7 +17,7 @@ public class KdbEncoder {
     public static final int SIZE_OF_DOUBLE = 8;
     public static final int SIZE_OF_LONG = 8;
     private static final int SIZE_OF_TIMESPAN = 8;
-    private static final String ENCODING = "ISO-8859-1";
+    public static final String ISO_8859_1_ENCODING = "ISO-8859-1";
     public static final DirectBuffer SYNC_MSG = encodeSync(ByteOrder.LITTLE_ENDIAN);
 
     public static int encodeSymArray(MutableDirectBuffer buffer, int offset, String[] strings, ByteOrder byteOrder) {
@@ -36,16 +36,7 @@ public class KdbEncoder {
         return position - offset;
     }
 
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-    public static String bytesToHex(byte[] bytes, int offset, int length) {
-        char[] hexChars = new char[length * 2];
-        for (int j = offset; j < offset+length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars);
-    }
+
 
     public static int encodeDoubleArray(MutableDirectBuffer buffer, int offset, double[] vector, ByteOrder BYTE_ORDER) {
         int position = offset;
@@ -89,6 +80,19 @@ public class KdbEncoder {
         return position - offset;
     }
 
+    public static int encodeCharsequence(MutableDirectBuffer buffer, int offset, CharSequence seq, ByteOrder byteOrder) {
+        int position = offset;
+        buffer.putByte(position, KdbType.Char.type());
+        position += SizeOfType + 1;
+        buffer.putInt(position, seq.length(), byteOrder);
+        position += SIZE_OF_LENGTH;
+        for (int i = 0; i < seq.length(); i++) {
+            char v = seq.charAt(i);
+            buffer.putChar(position, v);
+            position += 1;
+        }
+        return position - offset;
+    }
     public static int encodeNanosToTimspan(MutableDirectBuffer buffer, int offset, long[] nanoTimes, ByteOrder order) {
         int position = offset;
         buffer.putByte(position, KdbType.Timespan.type());
@@ -114,7 +118,7 @@ public class KdbEncoder {
         for (int i = 0; i < vector.length; i++) {
             Object v = vector[i];
             if(v instanceof String) {
-                buffer.putByte(position, KdbType.Sym.scalarTypeCode());
+                buffer.putByte(position, KdbType.Sym.atomTypeCode());
                 position += SizeOfType;
                 String s = (String) v;
                 for (int j = 0; j < s.length(); j++) {
@@ -126,6 +130,11 @@ public class KdbEncoder {
             }
             else if(v instanceof TimeUtils.TimespanVector) {
                 TimeUtils.TimespanVector t = (TimeUtils.TimespanVector) v;
+                int size = t.encode(buffer, position, byteOrder);
+                position += size;
+            }
+            else if(v instanceof TimeUtils.TimestampVector) {
+                TimeUtils.TimestampVector t = (TimeUtils.TimestampVector) v;
                 int size = t.encode(buffer, position, byteOrder);
                 position += size;
             }
@@ -183,7 +192,7 @@ public class KdbEncoder {
     }
     public static int encodeLogin(MutableDirectBuffer writeBuffer, int offset, String creds) {
         try {
-            byte[] bytes = creds.getBytes(ENCODING);
+            byte[] bytes = creds.getBytes(ISO_8859_1_ENCODING);
             writeBuffer.putBytes(offset, bytes);
             int written = bytes.length;
             writeBuffer.putByte(offset + written, (byte) 3);
@@ -195,5 +204,20 @@ public class KdbEncoder {
             LangUtil.rethrowUnchecked(e);
         }
         return 0;
+    }
+
+    public static int encodeNanosToTimestamp(MutableDirectBuffer buffer, int offset, long[] nanoTimes, ByteOrder order) {
+        int position = offset;
+        buffer.putByte(position, KdbType.Timestamp.type());
+        position += SizeOfType + 1;
+        buffer.putInt(position, nanoTimes.length, order);
+        position += SIZE_OF_LENGTH;
+        for (int i = 0; i < nanoTimes.length; i++) {
+            long t = nanoTimes[i];
+
+            buffer.putLong(position, t, order);
+            position += KdbType.Timestamp.primitiveSize();
+        }
+        return position - offset;
     }
 }
