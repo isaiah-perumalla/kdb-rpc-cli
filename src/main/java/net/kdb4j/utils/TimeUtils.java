@@ -72,8 +72,12 @@ public class TimeUtils {
             return KdbEncoder.encodeNanosToTimestamp(buffer, offset, values, order);
         }
 
-        public void setNanoTimeAt(int i, long nanos) {
-            this.values[i] = nanos - MID_NIGHT_NANOS;
+        public void setEpochNanoTimeAt(int i, long nanos) {
+            this.values[i] = toKdbTimestamp(nanos);
+        }
+
+        public void setEpochMillisTimeAt(int i, long epochMillis) {
+            this.values[i] = toKdbTimestamp(epochMillisToNanos(epochMillis));
         }
     }
 }
