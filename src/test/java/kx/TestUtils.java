@@ -18,7 +18,7 @@ public class TestUtils {
     public static TimeUtils.TimestampVector getTimestampVector(c.Timespan[] time) {
         TimeUtils.TimestampVector tsVector = new TimeUtils.TimestampVector(time.length);
         for (int i = 0; i < time.length; i++) {
-            tsVector.setNanoTimeAt(i, System.nanoTime());
+            tsVector.setEpochMillisTimeAt(i, System.currentTimeMillis());
         }
         return tsVector;
     }
@@ -47,8 +47,8 @@ public class TestUtils {
             ask[i] = s*current.nextDouble();
             bsize[i] = s*100;
             asize[i] = s*200;
-            mode[i] = 'c';
-            ex[i] = 'b';
+            mode[i] = 'X';
+            ex[i] = 'Z';
             ts[i] = new Timestamp(Instant.now().toEpochMilli());
         }
         // Note that we don't need to supply a flip with columns names for .u.upd.

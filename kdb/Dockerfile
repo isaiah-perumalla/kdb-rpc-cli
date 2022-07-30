@@ -28,6 +28,8 @@ RUN chmod 744 /root/tick.sh
 EXPOSE 5010
 # port 5011 for rdb
 EXPOSE 5011
+#port 5012 for hdb
+EXPOSE 5012
 #WORKDIR /root/ticker
 #Start tickeplant
 CMD ["sh", "/root/tick.sh"]
