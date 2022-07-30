@@ -4,6 +4,7 @@ import kx.TestUtils;
 import net.kdb4j.KdbConnection;
 import net.kdb4j.KdbEventHandler;
 import net.kdb4j.codecs.KdbEncoder;
+import org.agrona.DirectBuffer;
 import org.agrona.ExpandableDirectByteBuffer;
 import org.agrona.MutableDirectBuffer;
 
@@ -26,6 +27,16 @@ public class TestDataPublisher implements KdbEventHandler {
         this.closed = true;
         System.err.println("session disconnected ");
         return 0;
+    }
+
+    @Override
+    public void onError(DirectBuffer directBuffer, int offset, int length) {
+
+    }
+
+    @Override
+    public void onMessage(DirectBuffer directBuffer, int offset, int length) {
+
     }
 
     private  int publishData(KdbConnection k) {
