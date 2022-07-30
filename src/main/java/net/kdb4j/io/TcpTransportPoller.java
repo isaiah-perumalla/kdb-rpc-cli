@@ -44,7 +44,7 @@ public class TcpTransportPoller extends TransportPoller {
         channel.connect(remote);
     }
 
-    public int pollEndpoints() {
+    public int poll() {
         int bytes = 0;
         try {
             selector.selectNow();

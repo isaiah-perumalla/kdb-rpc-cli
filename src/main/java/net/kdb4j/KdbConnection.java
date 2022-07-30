@@ -10,6 +10,7 @@ import java.nio.ByteOrder;
 
 public class KdbConnection implements TcpChannelHandler {
     private final String creds;
+    private final StringBuilder errorSB = new StringBuilder();
     private final MutableDirectBuffer writeBuffer = new ExpandableDirectByteBuffer(1024);
     private final MutableDirectBuffer readBuffer = new ExpandableDirectByteBuffer(1024);
     private byte capabilities;
@@ -17,6 +18,7 @@ public class KdbConnection implements TcpChannelHandler {
     private final KdbEventHandler kdbHandler;
     private TcpEndPoint tcpEndpoint;
     private static final DirectBuffer SYNC_MSG = new UnsafeBuffer(KdbEncoder.SYNC_MSG);
+    private final KDataBuffer kdataBuffer = new KDataBuffer();
 
     public KdbConnection(String creds, KdbEventHandler kdbHandler) {
 
@@ -45,18 +47,22 @@ public class KdbConnection implements TcpChannelHandler {
         }
         else {
             if(-128 == directBuffer.getByte(offset + 8)) {
-
-                StringBuilder sb = new StringBuilder();
+                errorSB.setLength(0);
                 for (int i = 8; i < length; i++) {
-                    sb.append((char)directBuffer.getByte(i+offset));
-
+                    errorSB.append((char)directBuffer.getByte(i+offset));
                 }
-                System.err.println("error " + sb.toString());
+                System.err.println("error " + errorSB.toString());
+                this.kdbHandler.onError(directBuffer, offset, length);
             }
-            System.out.println(ByteUtils.bytesToHex(directBuffer, offset, length));
+            else {
+                //ToDo need to frame the message and notify handlers
+//                kdataBuffer.wrap(directBuffer, offset, length);
+                this.kdbHandler.onMessage(directBuffer, offset, length);
+                //            System.out.println(ByteUtils.bytesToHex(directBuffer, offset, length));
+            }
+
             return length;
         }
-
     }
 
     @Override
@@ -86,7 +92,6 @@ public class KdbConnection implements TcpChannelHandler {
     }
 
     public int k(CharSequence command) {
-
         ExpandableArrayBuffer e = new ExpandableArrayBuffer();
         int size = KdbEncoder.encodeCharsequence(e, 0, command, ByteOrder.LITTLE_ENDIAN );
         return tcpEndpoint.write(e, 0, size);

@@ -22,7 +22,6 @@ public class EncoderTests {
         int size = KdbEncoder.encodeSymArray(buffer, 0, sym, ByteOrder.LITTLE_ENDIAN);
         assertEquals(19, size);
         Assert.assertEquals("0B000300000074696D65006269640061736B00", ByteUtils.bytesToHex(buffer.byteArray(), 0, size));
-
     }
 
     @Test
