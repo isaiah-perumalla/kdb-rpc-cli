@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'net.kdb4j'
+group 'org.example'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
