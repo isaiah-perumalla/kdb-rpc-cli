@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/isaiah-perumalla/kdb4j.svg?branch=main)](https://travis-ci.org/isaiah-perumalla/kdb4j)
 # kdb4j efficient Java library for KDB+ Time Series Database
+## experimental not fully functional yet !
+## goals 
 * Event driven java lib for kdb+ publishing and subcribing to [kdb+ ticker plant](http://code.kx.com/q/) 
 * Non blocking IO using a single thread event loop
 * Allocation free in steady state
